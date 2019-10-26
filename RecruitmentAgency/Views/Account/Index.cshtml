@@ -1,0 +1,14 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Пользователи";
+}
+
+@switch (@Html.Action("UserRole", "Home").ToString())
+{
+    case "Администратор":
+        @Html.Action("UsersPartial")
+        break;
+}
+
+<br />

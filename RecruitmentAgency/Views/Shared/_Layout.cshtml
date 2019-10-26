@@ -1,0 +1,69 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Кадровое агенство - @ViewBag.Title</title>
+
+    <link href="@Url.Content("~/css/bootstrap-v4.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/theme.bootstrap_4.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/jquery.tablesorter.pager.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/font.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/css/Site.css")" rel="stylesheet" type="text/css" />
+
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="~/js/jquery.validate.min.js"></script>
+    <script src="~/js/jquery.validate.unobtrusive.min.js"></script>
+</head>
+<body>
+    @if (@User.Identity.IsAuthenticated)
+    {
+        <ul class="menu-title">
+            <li class="item"> Добро пожаловать в личный кабинет @Html.Action("UserRole", "Home").ToString() @Html.Action("UserName", "Home").ToString() </li>
+            <li class="left-item">
+                @using (Html.BeginForm("LogOff", "Account"))
+                {
+                    <button class="buttom">Выход</button>
+                }
+            </li>
+        </ul>
+        if (@Html.Action("UserRole", "Home").ToString() == "Соискатель")
+        {
+            <nav class=" top-menu">
+                <ul class="menu-main">
+                    <li class="left-item">@Html.ActionLink("Резюме", "Details", "Summaries")</li>
+                    <li class="left-item">@Html.ActionLink("Список вакансий", "Index", "Vacancies")</li>
+                </ul>
+            </nav>
+        }
+
+        if (@Html.Action("UserRole", "Home").ToString() == "Работодатель")
+        {
+            <nav class=" top-menu">
+                <ul class="menu-main">
+                    <li class="left-item">@Html.ActionLink("Создать вакансию", "Create", "Vacancies")</li>
+                    <li class="left-item">@Html.ActionLink("Список Ваших вакансий", "Index", "Vacancies")</li>
+                    <li class="left-item">@Html.ActionLink("Список кандидатов", "Index", "Summaries")</li>
+                </ul>
+            </nav>
+        }
+
+        if (@Html.Action("UserRole", "Home").ToString() == "Администратор")
+        {
+            <nav class=" top-menu">
+                <ul class="menu-main">
+                    <li class="left-item">@Html.ActionLink("Список вакансий", "Index", "Vacancies")</li>
+                    <li class="left-item">@Html.ActionLink("Список резюме", "Index", "Summaries")</li>
+                    <li class="left-item">@Html.ActionLink("Список пользователей", "Index", "Account")</li>
+                    <li class="left-item">@Html.ActionLink("Добавить пользователя", "Create", "Account")</li>
+                </ul>
+            </nav>
+        }
+    }
+
+    <div class="body-content">
+        @RenderBody()
+    </div>
+
+</body>
+</html>
+

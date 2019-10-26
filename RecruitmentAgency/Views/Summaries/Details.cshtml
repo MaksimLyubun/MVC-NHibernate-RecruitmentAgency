@@ -1,0 +1,57 @@
+﻿@model RecruitmentAgency.Models.Summaries
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Резюме";
+}
+
+@using (Html.BeginForm())
+{
+    var imgSrc = Model != null && Model.Photo != null? String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.Photo)) : null;
+
+<div class="content">
+    <div class="column">
+        <dl class="dl-horizontal">
+            <dd>
+                <div class="photo-block">
+                    <img class="photo" src="@imgSrc" id="image" />
+                </div>
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.JobseekerName)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.JobseekerName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.DateOfBirth)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.DateOfBirth)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Experience)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Experience)
+            </dd>
+            @if (@Html.Action("UserRole", "Home").ToString() == "Соискатель")
+            {
+                <dd>
+                    <label class="buttomStyle">
+                        <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Edit", "Summaries")'" />
+                        Редактировать
+                    </label>
+                </dd>
+            }
+        </dl>
+    </div>
+    @if (@Html.Action("UserRole", "Home").ToString() == "Соискатель" && Model != null)
+    {
+        <div class="column">
+            <h2>Подходящие вакансии</h2>
+            @Html.Action("VacanciesPartial", "Vacancies", new { summary = Model })
+        </div>
+    }
+</div> 
+}

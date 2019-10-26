@@ -1,0 +1,22 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Вакансии";
+}
+
+@switch (@Html.Action("UserRole", "Home").ToString())
+{
+    case "Администратор":
+        @Html.Action("VacanciesPartial")
+        break;
+
+    case "Работодатель":
+        @Html.Action("VacanciesPartial", new { userId = ViewBag.userId })
+        break;
+
+    case "Соискатель":
+        @Html.Action("VacanciesPartial")
+        break;
+}
+
+<br />

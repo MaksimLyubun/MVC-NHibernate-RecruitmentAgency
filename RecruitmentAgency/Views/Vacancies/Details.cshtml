@@ -1,0 +1,85 @@
+﻿@model RecruitmentAgency.Models.Vacancies
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Вакансия";
+}
+
+@using (Html.BeginForm())
+{
+<div class="content">
+    <div class="column">
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Term)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Term)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Company)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Company)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.MinExperience)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.MinExperience)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Salary)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Salary)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => model.Archived)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.Archived)
+            </dd>
+
+        </dl>
+
+        <label class="buttomStyle">
+            <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Edit", "Vacancies", new { vacancyId = Model.Id })'" />
+            Редактировать
+        </label>
+    </div>
+
+    @if (@Html.Action("UserRole", "Home").ToString() == "Работодатель")
+    {
+        <div class="column">
+            <h2>Подходящие кандидаты</h2>
+            @Html.Action("SummariesPartial", "Summaries", new { vacancy = Model })
+        </div>
+    }
+</div>
+    }

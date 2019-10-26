@@ -1,0 +1,60 @@
+﻿@model RecruitmentAgency.Models.Identity.RegisterViewModel
+@{
+    ViewBag.Title = "Регистрация";
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h2>Регистрация</h2>
+        <br />
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.UserName, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.ConfirmPassword, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.UserRole, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.DropDownList("UserRole", ViewBag.Roles as SelectList, htmlAttributes: new { @class = "form-control" })
+            </div>
+        </div>
+
+        <br />
+        <div class="form-group">
+            <div class="col-md-10">
+                <label class="buttomStyle">
+                    <input type="submit" class="buttomNone" />
+                    Регистрация
+                </label>
+
+                <label class="buttomStyle">
+                    <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Login", "Account")'" />
+                    Страница авторизации
+                </label>
+                <br />
+            </div>
+        </div>
+    </div>
+}

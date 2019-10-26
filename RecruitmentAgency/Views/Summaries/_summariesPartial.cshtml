@@ -1,0 +1,107 @@
+﻿@model IEnumerable<RecruitmentAgency.Models.Summaries>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-light">
+        <tr>
+            <th class="sorter-text">@Html.DisplayNameFor(model => model.JobseekerName)</th>
+            <th class="sorter-text">@Html.DisplayNameFor(model => model.DateOfBirth) </th>
+            <th class="sorter-text">@Html.DisplayNameFor(model => model.Experience)</th>
+            <th data-sorter="false" data-filter="false"></th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr>
+            <th class="sorter-text">@Html.DisplayNameFor(model => model.JobseekerName)</th>
+            <th class="sorter-text">@Html.DisplayNameFor(model => model.DateOfBirth) </th>
+            <th class="sorter-text">@Html.DisplayNameFor(model => model.Experience)</th>
+            <th></th>
+        </tr>
+        <tr>
+            <th colspan="4" class="ts-pager">
+                <div class="form-inline">
+                    <div class="btn-group btn-group-sm mx-1" role="group">
+                        <button type="button" class="btn btn-secondary first" title="Первая">⇤</button>
+                        <button type="button" class="btn btn-secondary prev" title="Предыдущая">←</button>
+                    </div>
+                    <span class="pagedisplay"></span>
+                    <div class="btn-group btn-group-sm mx-1" role="group">
+                        <button type="button" class="btn btn-secondary next" title="Следующая">→</button>
+                        <button type="button" class="btn btn-secondary last" title="Последняя">⇥</button>
+                    </div>
+                    <select class="form-control-sm custom-select px-1 pagesize" title="Количество резюме на странице">
+                        <option selected="selected" value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                        <option value="all">Все резюме</option>
+                    </select>
+                    <select class="form-control-sm custom-select px-4 mx-1 pagenum" title="Выберите номер страницы"></select>
+                </div>
+            </th>
+        </tr>
+    </tfoot>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobseekerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfBirth)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Experience)
+            </td>
+            <td>
+                <label class="buttomStyle">
+                    <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Details", "Summaries", new { summaryId = item.Id })'" />
+                    Подробнее
+                </label>
+            </td>
+        </tr>
+        }
+
+    </tbody>
+</table>
+
+<script src="~/js/jquery.tablesorter.js"></script>
+<script src="~/js/jquery.tablesorter.widgets.js"></script>
+<script src="~/js/jquery.tablesorter.pager.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+
+        $("table").tablesorter({
+            theme: "bootstrap",
+
+            widthFixed: true,
+
+            widgets: ["filter", "columns", "zebra"],
+
+            widgetOptions: {
+                zebra: ["even", "odd"],
+
+                columns: ["primary", "secondary", "tertiary"],
+
+                filter_reset: ".reset",
+
+                filter_cssFilter: [
+                    'form-control',
+                    'form-control',
+                    'form-control',
+                ],
+            }
+        })
+            .tablesorterPager({
+                container: $(".ts-pager"),
+
+                cssGoto: ".pagenum",
+
+                removeRows: false,
+
+                output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+
+            });
+
+    });
+</script>

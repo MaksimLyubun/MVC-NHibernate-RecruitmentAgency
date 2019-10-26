@@ -1,0 +1,77 @@
+﻿@model RecruitmentAgency.Models.Summaries
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    ViewBag.Title = "Редактирование резюме";
+}
+
+@using (Html.BeginForm("Edit", "Summaries", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    var imgSrc = Model.Photo != null ? String.Format("data:image/gif;base64,{0}", Convert.ToBase64String(Model.Photo)) : null;
+
+    @Html.EditorFor(u => u.Id, new { @Id = 0 })
+    @Html.EditorFor(u => u.Photo)
+
+<div class="form-horizontal">
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Photo, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            <div class="photo-block">
+                <img class="photo" src="@imgSrc" id="image" />
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.JobseekerName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.JobseekerName, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.JobseekerName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DateOfBirth, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Experience, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.EditorFor(model => model.Experience, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.ValidationMessageFor(model => model.Experience, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <br />
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <label class="buttomStyle">
+                <input type="submit" class="buttomNone" />
+                Обновить
+            </label>
+            <label class="buttomStyle">
+                <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Details", "Summaries", new { summaryId = Model.Id })'" />
+                Отмена
+            </label>
+            <label class="buttomStyle">
+                <input type="file" class="buttomNone" name="PhotoUpload" accept="image/*" onchange="previewImage(event)" />
+                Изменить фото
+            </label>
+        </div>
+    </div>
+</div>
+
+    <script>
+        function previewImage(event) {
+            var image = document.querySelector("#image");
+            image.src = URL.createObjectURL(event.target.files[0]);
+        };
+    </script>
+}
