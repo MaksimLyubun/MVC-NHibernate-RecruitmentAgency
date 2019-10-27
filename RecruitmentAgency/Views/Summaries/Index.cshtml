@@ -4,15 +4,9 @@
     ViewBag.Title = "Резюме";
 }
 
-@switch (@Html.Action("UserRole", "Home").ToString())
+@if (ViewBag.user.IsAdmin() || ViewBag.user.IsEmployee())
 {
-    case "Администратор":
-        @Html.Action("SummariesPartial")
-        break;
-
-    case "Работодатель":
-        @Html.Action("SummariesPartial")
-        break;
+    @Html.Action("SummariesPartial")
 }
 
 <br />

@@ -1,11 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using System.Collections.Generic;
 
 using RecruitmentAgency.Interfaces;
 using RecruitmentAgency.Models;
-using RecruitmentAgency.Models.Identity;
 using RecruitmentAgency.Repositories;
 
 namespace RecruitmentAgency.Controllers
@@ -24,6 +22,8 @@ namespace RecruitmentAgency.Controllers
         public ActionResult Index()
         {
             User user = _usersRepository.GetByName(User.Identity.Name);
+
+            ViewBag.user = user;
             ViewBag.userId = user.Id;
 
             return View();
@@ -34,14 +34,16 @@ namespace RecruitmentAgency.Controllers
         {
             User user = _usersRepository.GetByName(User.Identity.Name);
 
-            if (user.UserRole.Name == "Работодатель")
+            ViewBag.user = user;
+
+            if (user.IsEmployee())
             {
                 List<Vacancy> vacancies = _vacanciesRepository.GetByUserId(user.Id).ToList();
 
                 return PartialView("_vacanciesPartial", vacancies);
             }
 
-            if (user.UserRole.Name == "Администратор")
+            if (user.IsAdmin())
             {
                 List<Vacancy> vacancies = _vacanciesRepository.GetAll().ToList();
 
@@ -67,7 +69,9 @@ namespace RecruitmentAgency.Controllers
         {
             Vacancy vacancy = _vacanciesRepository.GetById(vacancyId);
             User user = _usersRepository.GetByName(User.Identity.Name);
+
             ViewBag.userRoleName = user.UserRole.Name;
+            ViewBag.user = user;
 
             return View(vacancy);
         }

@@ -4,19 +4,15 @@
     ViewBag.Title = "Вакансии";
 }
 
-@switch (@Html.Action("UserRole", "Home").ToString())
+@if (ViewBag.user.IsAdmin() || ViewBag.user.IsJobseeker())
 {
-    case "Администратор":
-        @Html.Action("VacanciesPartial")
-        break;
-
-    case "Работодатель":
-        @Html.Action("VacanciesPartial", new { userId = ViewBag.userId })
-        break;
-
-    case "Соискатель":
-        @Html.Action("VacanciesPartial")
-        break;
+    @Html.Action("VacanciesPartial")
 }
+
+@if (ViewBag.user.IsEmployee())
+{
+    @Html.Action("VacanciesPartial", new { userId = ViewBag.user.Id })
+}
+
 
 <br />

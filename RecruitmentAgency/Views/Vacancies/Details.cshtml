@@ -74,7 +74,7 @@
         </label>
     </div>
 
-    @if (@Html.Action("UserRole", "Home").ToString() == "Работодатель")
+    @if (ViewBag.user.IsEmployee())
     {
         <div class="column">
             <h2>Подходящие кандидаты</h2>

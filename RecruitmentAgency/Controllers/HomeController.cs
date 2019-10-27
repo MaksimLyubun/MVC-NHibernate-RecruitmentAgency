@@ -1,9 +1,7 @@
 ﻿using RecruitmentAgency.Models;
-using RecruitmentAgency.Models.Identity;
 using RecruitmentAgency.Interfaces;
 using RecruitmentAgency.Repositories;
 using System.Web.Mvc;
-using System.Linq;
 
 namespace RecruitmentAgency.Controllers
 {
@@ -21,6 +19,8 @@ namespace RecruitmentAgency.Controllers
 
         public ActionResult Index()
         {
+            ViewBag.user = _usersRepository.GetByName(User.Identity.Name);
+
             return View(CurrentUser);
         }
 

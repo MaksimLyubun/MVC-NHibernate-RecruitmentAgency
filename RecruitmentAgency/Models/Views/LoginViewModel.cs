@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RecruitmentAgency.Models.Identity
+namespace RecruitmentAgency.Models.Views
 {
     public class LoginViewModel
     {

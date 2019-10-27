@@ -188,8 +188,10 @@
     <Compile Include="Interfaces\IRepository.cs" />
     <Compile Include="Models\DatabaseContext.cs" />
     <Compile Include="Models\Identity\IdentityStore.cs" />
-    <Compile Include="Models\Identity\LoginViewModel.cs" />
-    <Compile Include="Models\Identity\RegisterViewModel.cs" />
+    <Compile Include="Models\Views\LoginViewModel.cs" />
+    <Compile Include="Models\Views\UserViewModel.cs" />
+    <Compile Include="Models\Views\PasswordViewModel.cs" />
+    <Compile Include="Models\Views\RegisterViewModel.cs" />
     <Compile Include="Models\Identity\SignInManager.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\Identity\UserManager.cs" />

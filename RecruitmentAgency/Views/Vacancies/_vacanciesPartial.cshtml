@@ -1,6 +1,5 @@
 ﻿@model IEnumerable<RecruitmentAgency.Models.Vacancy>
 
-@{ string currentRole = Html.Action("UserRole", "Home").ToString(); }
 <table class="table table-bordered table-striped">
     <thead class="thead-light">
         <tr>
@@ -10,14 +9,14 @@
             <th class="sorter-text"> @Html.DisplayNameFor(model => model.Company)</th>
             <th class="sorter-text"> @Html.DisplayNameFor(model => model.MinExperience)</th>
             <th class="sorter-text"> @Html.DisplayNameFor(model => model.Salary)</th>
-            @if (currentRole == "Работодатель")
+            @if (ViewBag.user.IsEmployee())
             {
                 <th class="sorter-text">
                     @Html.DisplayNameFor(model => model.Archived)
                 </th>
                 <th data-sorter="false" data-filter="false"></th>
             }
-            @if (currentRole == "Администратор")
+            @if (ViewBag.user.IsAdmin())
             {
                 <th class="sorter-text">
                     @Html.DisplayNameFor(model => model.Archived)
@@ -33,14 +32,14 @@
             <th> @Html.DisplayNameFor(model => model.Company)</th>
             <th> @Html.DisplayNameFor(model => model.MinExperience)</th>
             <th> @Html.DisplayNameFor(model => model.Salary)</th>
-            @if (currentRole == "Работодатель")
+            @if (ViewBag.user.IsEmployee())
             {
                 <th>
                     @Html.DisplayNameFor(model => model.Archived)
                 </th>
                 <th></th>
             }
-            @if (currentRole == "Администратор")
+            @if (ViewBag.user.IsAdmin())
             {
                 <th>
                     @Html.DisplayNameFor(model => model.Archived)
@@ -92,7 +91,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Salary)
             </td>
-            @if (currentRole == "Работодатель")
+            @if (ViewBag.user.IsEmployee())
             {
                 <td>
                     @Html.DisplayFor(modelItem => item.Archived)
@@ -112,7 +111,7 @@
                     </label>
                 </td>
             }
-            @if (currentRole == "Администратор")
+            @if (ViewBag.user.IsAdmin())
             {
                 <td>
                     @Html.DisplayFor(modelItem => item.Archived)

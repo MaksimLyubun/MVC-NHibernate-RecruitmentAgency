@@ -17,6 +17,10 @@
 <body>
     @if (@User.Identity.IsAuthenticated)
     {
+        const string admin = "Администратор";
+        const string jobseeker = "Соискатель";
+        const string employee = "Работодатель";
+
         <ul class="menu-title">
             <li class="item"> Добро пожаловать в личный кабинет @Html.Action("UserRole", "Home").ToString() @Html.Action("UserName", "Home").ToString() </li>
             <li class="left-item">
@@ -26,7 +30,7 @@
                 }
             </li>
         </ul>
-        if (@Html.Action("UserRole", "Home").ToString() == "Соискатель")
+        if (@Html.Action("UserRole", "Home").ToString() == jobseeker)
         {
             <nav class=" top-menu">
                 <ul class="menu-main">
@@ -36,7 +40,7 @@
             </nav>
         }
 
-        if (@Html.Action("UserRole", "Home").ToString() == "Работодатель")
+        if (@Html.Action("UserRole", "Home").ToString() == employee)
         {
             <nav class=" top-menu">
                 <ul class="menu-main">
@@ -47,7 +51,7 @@
             </nav>
         }
 
-        if (@Html.Action("UserRole", "Home").ToString() == "Администратор")
+        if (@Html.Action("UserRole", "Home").ToString() == admin)
         {
             <nav class=" top-menu">
                 <ul class="menu-main">

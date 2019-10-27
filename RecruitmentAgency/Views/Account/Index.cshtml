@@ -4,11 +4,9 @@
     ViewBag.Title = "Пользователи";
 }
 
-@switch (@Html.Action("UserRole", "Home").ToString())
+@if(ViewBag.user.IsAdmin())
 {
-    case "Администратор":
-        @Html.Action("UsersPartial")
-        break;
+    @Html.Action("UsersPartial")
 }
 
 <br />

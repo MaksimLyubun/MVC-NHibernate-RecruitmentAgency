@@ -7,6 +7,10 @@ namespace RecruitmentAgency.Models
 {
     public class User : IUser<int>
     {
+        const string admin = "Администратор";
+        const string jobseeker = "Соискатель";
+        const string employee = "Работодатель";
+        
         [HiddenInput(DisplayValue = false)]
         public virtual int Id { get; protected set; }
 
@@ -20,6 +24,21 @@ namespace RecruitmentAgency.Models
         [Display(Name = "Роль")]
         [Required]
         public virtual UserRole UserRole { get; set; }
+
+        public virtual bool IsAdmin()
+        {
+            return UserRole.Name == admin;
+        }
+
+        public virtual bool IsJobseeker()
+        {
+            return UserRole.Name == jobseeker;
+        }
+
+        public virtual bool IsEmployee()
+        {
+            return UserRole.Name == employee;
+        }
 
         public class Map : ClassMap<User>
         {

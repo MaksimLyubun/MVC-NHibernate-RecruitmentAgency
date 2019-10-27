@@ -6,6 +6,7 @@ using System.Linq;
 
 using RecruitmentAgency.Models;
 using RecruitmentAgency.Models.Identity;
+using RecruitmentAgency.Models.Views;
 using RecruitmentAgency.Interfaces;
 using RecruitmentAgency.Repositories;
 
@@ -24,6 +25,8 @@ namespace RecruitmentAgency.Controllers
         
         public ActionResult Index()
         {
+            ViewBag.user = _usersRepository.GetByName(User.Identity.Name);
+
             return View();
         }
         
@@ -32,7 +35,7 @@ namespace RecruitmentAgency.Controllers
         {
             User user = _usersRepository.GetByName(User.Identity.Name);
 
-            if (user.UserRole.Name == "Администратор")
+            if (user.IsAdmin())
             {
                 ViewBag.userId = user.Id;
                 return PartialView("_usersPartial", _usersRepository.GetAll());
@@ -87,28 +90,28 @@ namespace RecruitmentAgency.Controllers
             SelectList roles = new SelectList(_userRolesRepository.GetAll(), "Id", "Name", user.UserRole.Id);
             ViewBag.Roles = roles;
             
-            RegisterViewModel registerViewModel = new RegisterViewModel()
+            UserViewModel model = new UserViewModel()
             {
                 UserName = user.UserName,
                 UserRole = user.UserRole.Id,
             };
             
-            return View(registerViewModel);
+            return View(model);
         }
 
         [Authorize]
         public ActionResult ChangePassword(int userId)
         {
             ViewBag.userId = userId;
-            
-            RegisterViewModel registerViewModel = new RegisterViewModel();
 
-            return View(registerViewModel);
+            PasswordViewModel model = new PasswordViewModel();
+
+            return View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult ChangePassword(RegisterViewModel registerViewModel, int userId)
+        public ActionResult ChangePassword(PasswordViewModel model, int userId)
         {
             User user = _usersRepository.GetById(userId);
 
@@ -116,19 +119,19 @@ namespace RecruitmentAgency.Controllers
             ModelState.Remove("UserRole");
             if (ModelState.IsValid)
             {
-                user.PasswordHash = UsersManager.PasswordHasher.HashPassword(registerViewModel.Password);
+                user.PasswordHash = UsersManager.PasswordHasher.HashPassword(model.Password);
 
                 _usersRepository.Update(user);
                 
                 return RedirectToAction("Index", "Account");
             }
             
-            return View(registerViewModel);
+            return View(model);
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult Edit(RegisterViewModel registerViewModel, int userId)
+        public ActionResult Edit(UserViewModel model, int userId)
         {
             User user = _usersRepository.GetById(userId);
 
@@ -136,13 +139,13 @@ namespace RecruitmentAgency.Controllers
             ModelState.Remove("ConfirmPassword");
             if (ModelState.IsValid)
             {
-                UserRole userRole = _userRolesRepository.GetById(registerViewModel.UserRole);
+                UserRole userRole = _userRolesRepository.GetById(model.UserRole);
 
                 if (userRole.Id != user.UserRole.Id)
                 {
                     User newUser = new User()
                     {
-                        UserName = registerViewModel.UserName,
+                        UserName = model.UserName,
                         PasswordHash = user.PasswordHash,
                         UserRole = userRole
                     };
@@ -154,7 +157,7 @@ namespace RecruitmentAgency.Controllers
                     return RedirectToAction("Index", "Account");
                 }
 
-                user.UserName = registerViewModel.UserName;
+                user.UserName = model.UserName;
                 
                 _usersRepository.Update(user);
 
@@ -164,7 +167,7 @@ namespace RecruitmentAgency.Controllers
             SelectList roles = new SelectList(_userRolesRepository.GetAll(), "Id", "Name", user.UserRole.Id);
             ViewBag.Roles = roles;
 
-            return View(registerViewModel);
+            return View(model);
         }
 
         [Authorize]
@@ -194,18 +197,21 @@ namespace RecruitmentAgency.Controllers
                 var result = SignInManager.PasswordSignIn(model.UserName, model.Password, false, false);
                 if (result == SignInStatus.Success)
                 {
-                    UserRole userRole = _usersRepository.GetByName(model.UserName).UserRole;
+                    User user = _usersRepository.GetByName(model.UserName);
 
-                    switch (userRole.Name)
+                    if(user.IsEmployee())
                     {
-                        case "Администратор":
-                            return RedirectToAction("Index", "Vacancies");
-                        case "Соискатель":
-                            return RedirectToAction("Details", "Summaries");
-                        case "Работодатель":
-                            return RedirectToAction("Index", "Vacancies");
-                        default:
-                            return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Vacancies");
+                    }
+
+                    if (user.IsAdmin())
+                    {
+                        return RedirectToAction("Index", "Vacancies");
+                    }
+
+                    if (user.IsJobseeker())
+                    {
+                        return RedirectToAction("Details", "Summaries");
                     }
                 }
                 else

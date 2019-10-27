@@ -35,7 +35,7 @@
             <dd>
                 @Html.DisplayFor(model => model.Experience)
             </dd>
-            @if (@Html.Action("UserRole", "Home").ToString() == "Соискатель")
+            @if (ViewBag.user.IsJobseeker())
             {
                 <dd>
                     <label class="buttomStyle">
@@ -46,7 +46,7 @@
             }
         </dl>
     </div>
-    @if (@Html.Action("UserRole", "Home").ToString() == "Соискатель" && Model != null)
+    @if (ViewBag.user.IsJobseeker() && Model != null)
     {
         <div class="column">
             <h2>Подходящие вакансии</h2>

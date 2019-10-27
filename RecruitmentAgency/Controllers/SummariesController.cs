@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using RecruitmentAgency.Models;
-using RecruitmentAgency.Models.Identity;
+﻿using RecruitmentAgency.Models;
 using RecruitmentAgency.Interfaces;
 using RecruitmentAgency.Repositories;
 using System.Web;
@@ -26,6 +23,8 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Index()
         {
+            ViewBag.user = _usersRepository.GetByName(User.Identity.Name);
+
             return View();
         }
 
@@ -44,6 +43,9 @@ namespace RecruitmentAgency.Controllers
         public ActionResult Details(int? summaryId)
         {
             Summary summary = new Summary();
+            User user = _usersRepository.GetByName(User.Identity.Name);
+
+            ViewBag.user = user;
 
             if ( summaryId != null)
             {
@@ -51,7 +53,6 @@ namespace RecruitmentAgency.Controllers
             }
             else
             {
-                User user = _usersRepository.GetByName(User.Identity.Name);
                 summary = _summariesRepository.GetByUserId(user.Id);
             }
 
