@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace RecruitmentAgency.Models.Identity
 {
-    public class IdentityStore : IUserStore<Users, int>,
-        IUserPasswordStore<Users, int>,
-        IUserLockoutStore<Users, int>,
-        IUserTwoFactorStore<Users, int>
+    public class IdentityStore : IUserStore<User, int>,
+        IUserPasswordStore<User, int>,
+        IUserLockoutStore<User, int>,
+        IUserTwoFactorStore<User, int>
     {
         private readonly ISession session;
 
@@ -19,98 +19,98 @@ namespace RecruitmentAgency.Models.Identity
         }
         
         #region IUserStore<Users, int>
-        public Task CreateAsync(Users user)
+        public Task CreateAsync(User user)
         {
             return Task.Run(() => session.SaveOrUpdate(user));
         }
 
-        public Task DeleteAsync(Users user)
+        public Task DeleteAsync(User user)
         {
             return Task.Run(() => session.Delete(user));
         }
 
-        Task<Users> IUserStore<Users, int>.FindByIdAsync(int userId)
+        Task<User> IUserStore<User, int>.FindByIdAsync(int userId)
         {
-            return Task.Run(() => session.Get<Users>(userId));
+            return Task.Run(() => session.Get<User>(userId));
         }
 
-        Task<Users> IUserStore<Users, int>.FindByNameAsync(string userName)
+        Task<User> IUserStore<User, int>.FindByNameAsync(string userName)
         {
             return Task.Run(() =>
             {
-                return session.QueryOver<Users>()
+                return session.QueryOver<User>()
                     .Where(u => u.UserName == userName)
                     .SingleOrDefault();
             });
         }
 
-        public Task UpdateAsync(Users user)
+        public Task UpdateAsync(User user)
         {
             return Task.Run(() => session.SaveOrUpdate(user));
         }
         #endregion
 
         #region IUserPasswordStore<User, int>
-        public Task SetPasswordHashAsync(Users user, string passwordHash)
+        public Task SetPasswordHashAsync(User user, string passwordHash)
         {
             return Task.Run(() => user.PasswordHash = passwordHash);
         }
 
-        public Task<string> GetPasswordHashAsync(Users user)
+        public Task<string> GetPasswordHashAsync(User user)
         {
             return Task.FromResult(user.PasswordHash);
         }
 
-        public Task<bool> HasPasswordAsync(Users user)
+        public Task<bool> HasPasswordAsync(User user)
         {
             return Task.FromResult(true);
         }
         #endregion
 
         #region IUserLockoutStore<User, int>
-        public Task<DateTimeOffset> GetLockoutEndDateAsync(Users user)
+        public Task<DateTimeOffset> GetLockoutEndDateAsync(User user)
         {
             return Task.FromResult(DateTimeOffset.MaxValue);
         }
 
-        public Task SetLockoutEndDateAsync(Users user, DateTimeOffset lockoutEnd)
+        public Task SetLockoutEndDateAsync(User user, DateTimeOffset lockoutEnd)
         {
             return Task.CompletedTask;
         }
 
-        public Task<int> IncrementAccessFailedCountAsync(Users user)
+        public Task<int> IncrementAccessFailedCountAsync(User user)
         {
             return Task.FromResult(0);
         }
 
-        public Task ResetAccessFailedCountAsync(Users user)
+        public Task ResetAccessFailedCountAsync(User user)
         {
             return Task.CompletedTask;
         }
 
-        public Task<int> GetAccessFailedCountAsync(Users user)
+        public Task<int> GetAccessFailedCountAsync(User user)
         {
             return Task.FromResult(0);
         }
 
-        public Task<bool> GetLockoutEnabledAsync(Users user)
+        public Task<bool> GetLockoutEnabledAsync(User user)
         {
             return Task.FromResult(false);
         }
 
-        public Task SetLockoutEnabledAsync(Users user, bool enabled)
+        public Task SetLockoutEnabledAsync(User user, bool enabled)
         {
             return Task.CompletedTask;
         }
         #endregion
 
         #region IUserTwoFactorStore<Users, int>
-        public Task SetTwoFactorEnabledAsync(Users user, bool enabled)
+        public Task SetTwoFactorEnabledAsync(User user, bool enabled)
         {
             return Task.CompletedTask;
         }
 
-        public Task<bool> GetTwoFactorEnabledAsync(Users user)
+        public Task<bool> GetTwoFactorEnabledAsync(User user)
         {
             return Task.FromResult(false);
         }

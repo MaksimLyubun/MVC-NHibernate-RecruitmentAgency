@@ -14,8 +14,8 @@ namespace RecruitmentAgency.Controllers
 {
     public class SummariesController : Controller
     {
-        private readonly IRepository<Summaries> _summariesRepository;
-        private readonly IRepository<Users> _usersRepository;
+        private readonly ISummariesRepository _summariesRepository;
+        private readonly IUsersRepository _usersRepository;
 
         public SummariesController()
         {
@@ -30,10 +30,10 @@ namespace RecruitmentAgency.Controllers
         }
 
         [Authorize]
-        public ActionResult SummariesPartial(Vacancies vacancy)
+        public ActionResult SummariesPartial(Vacancy vacancy)
         {
-            List<Summaries> summaries = vacancy != null ?
-                _summariesRepository.GetAll().Where(v => v.Experience >= vacancy.MinExperience).ToList() :
+            List<Summary> summaries = vacancy != null ?
+                _summariesRepository.GetByVacancy(vacancy).ToList() :
                 _summariesRepository.GetAll().ToList();
 
             return PartialView("_summariesPartial", summaries);
@@ -43,7 +43,7 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Details(int? summaryId)
         {
-            Summaries summary = new Summaries();
+            Summary summary = new Summary();
 
             if ( summaryId != null)
             {
@@ -51,8 +51,8 @@ namespace RecruitmentAgency.Controllers
             }
             else
             {
-                Users user = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First();
-                summary = _summariesRepository.GetAll().Where(s => s.UserId == user.Id).FirstOrDefault();
+                User user = _usersRepository.GetByName(User.Identity.Name);
+                summary = _summariesRepository.GetByUserId(user.Id);
             }
 
             return View(summary);
@@ -62,14 +62,14 @@ namespace RecruitmentAgency.Controllers
         [HttpGet]
         public ActionResult Edit()
         {
-            Users user = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First();
-            Summaries summary = _summariesRepository.GetAll().Where(s => s.UserId == user.Id).FirstOrDefault();
-            return View(summary != null? summary: new Summaries());
+            User user = _usersRepository.GetByName(User.Identity.Name);
+            Summary summary = _summariesRepository.GetByUserId(user.Id);
+            return View(summary != null? summary: new Summary());
         }
 
         [Authorize]
         [HttpPost]
-        public ActionResult Edit(Summaries summary)
+        public ActionResult Edit(Summary summary)
         {
             if (Request.Files != null && Request.Files.Count > 0)
             {
@@ -91,7 +91,7 @@ namespace RecruitmentAgency.Controllers
 
             if (ModelState.IsValid)
             {
-                summary.UserId = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First().Id;
+                summary.UserId = _usersRepository.GetByName(User.Identity.Name).Id;
 
                 if (summary.Id != 0)
                     _summariesRepository.Update(summary);

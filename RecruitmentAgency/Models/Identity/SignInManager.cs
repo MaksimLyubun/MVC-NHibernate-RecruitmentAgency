@@ -4,9 +4,9 @@ using Microsoft.Owin.Security;
 
 namespace RecruitmentAgency.Models.Identity
 {
-    public class SignInManager : SignInManager<Users, int>
+    public class SignInManager : SignInManager<User, int>
     {
-        public SignInManager(UserManager<Users, int> userManager, IAuthenticationManager authenticationManager)
+        public SignInManager(UserManager<User, int> userManager, IAuthenticationManager authenticationManager)
             : base(userManager, authenticationManager) { }
 
         public void SignOut()

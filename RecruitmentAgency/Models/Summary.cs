@@ -7,7 +7,7 @@ using FluentNHibernate.Mapping;
 
 namespace RecruitmentAgency.Models
 {
-    public class Summaries
+    public class Summary
     {
         [HiddenInput(DisplayValue = false)]
         public virtual int Id { get; set; }
@@ -24,6 +24,7 @@ namespace RecruitmentAgency.Models
 
         [Display(Name = "Стаж (количество лет)")]
         [Required]
+        [Range(1, 500, ErrorMessage = "Стаж должен быть в интервале от 1 до 500")]
         public virtual int Experience { get; set; } = 0;
 
         [Display(Name = "Фотография")]
@@ -34,12 +35,13 @@ namespace RecruitmentAgency.Models
 
         public virtual int UserId { get; set; }
 
-        public virtual Users User { get; set; }
+        public virtual User User { get; set; }
 
-        public class Map : ClassMap<Summaries>
+        public class Map : ClassMap<Summary>
         {
             public Map()
             {
+                Table("Summaries");
                 Id(x => x.Id).GeneratedBy.Identity();
                 Map(x => x.JobseekerName).Not.Nullable();
                 Map(x => x.DateOfBirth).Not.Nullable();

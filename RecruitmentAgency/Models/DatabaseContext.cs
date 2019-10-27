@@ -16,10 +16,10 @@ namespace RecruitmentAgency.Models
             var connectionString = ConfigurationManager.ConnectionStrings["default"].ConnectionString;
             sessionFactory = Fluently.Configure()
                 .Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString))
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Users>())
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<UserRoles>())
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Summaries>())
-                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Vacancies>())
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<User>())
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<UserRole>())
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Summary>())
+                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Vacancy>())
                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<DatabaseContext>())
                 .BuildSessionFactory();
         }
@@ -28,7 +28,7 @@ namespace RecruitmentAgency.Models
             return sessionFactory.OpenSession();
         }
 
-        public IUserStore<Users, int> Users
+        public IUserStore<User, int> Users
         {
             get { return new IdentityStore(MakeSession()); }
         }

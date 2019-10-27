@@ -1,6 +1,6 @@
-﻿@model IEnumerable<RecruitmentAgency.Models.Vacancies>
+﻿@model IEnumerable<RecruitmentAgency.Models.Vacancy>
 
-
+@{ string currentRole = Html.Action("UserRole", "Home").ToString(); }
 <table class="table table-bordered table-striped">
     <thead class="thead-light">
         <tr>
@@ -10,12 +10,18 @@
             <th class="sorter-text"> @Html.DisplayNameFor(model => model.Company)</th>
             <th class="sorter-text"> @Html.DisplayNameFor(model => model.MinExperience)</th>
             <th class="sorter-text"> @Html.DisplayNameFor(model => model.Salary)</th>
-            @if (@Html.Action("UserRole", "Home").ToString() == "Работодатель")
+            @if (currentRole == "Работодатель")
             {
                 <th class="sorter-text">
                     @Html.DisplayNameFor(model => model.Archived)
                 </th>
                 <th data-sorter="false" data-filter="false"></th>
+            }
+            @if (currentRole == "Администратор")
+            {
+                <th class="sorter-text">
+                    @Html.DisplayNameFor(model => model.Archived)
+                </th>
             }
         </tr>
     </thead>
@@ -27,12 +33,18 @@
             <th> @Html.DisplayNameFor(model => model.Company)</th>
             <th> @Html.DisplayNameFor(model => model.MinExperience)</th>
             <th> @Html.DisplayNameFor(model => model.Salary)</th>
-            @if (@Html.Action("UserRole", "Home").ToString() == "Работодатель")
+            @if (currentRole == "Работодатель")
             {
                 <th>
                     @Html.DisplayNameFor(model => model.Archived)
                 </th>
                 <th></th>
+            }
+            @if (currentRole == "Администратор")
+            {
+                <th>
+                    @Html.DisplayNameFor(model => model.Archived)
+                </th>
             }
         </tr>
         <tr>
@@ -61,46 +73,52 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Term)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MinExperience)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Salary)
+            </td>
+            @if (currentRole == "Работодатель")
+            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
+                    @Html.DisplayFor(modelItem => item.Archived)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Description)
+                    <label class="buttomStyle">
+                        <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Edit", "Vacancies", new { vacancyId = item.Id })'" />
+                        Изменить
+                    </label>
+                    <label class="buttomStyle">
+                        <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Details", "Vacancies", new { vacancyId = item.Id })'" />
+                        Подробнее
+                    </label>
+                    <label class="buttomStyle">
+                        <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Delete", "Vacancies", new { vacancyId = item.Id })'" />
+                        Удалить
+                    </label>
                 </td>
+            }
+            @if (currentRole == "Администратор")
+            {
                 <td>
-                    @Html.DisplayFor(modelItem => item.Term)
+                    @Html.DisplayFor(modelItem => item.Archived)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Company)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MinExperience)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Salary)
-                </td>
-                @if (@Html.Action("UserRole", "Home").ToString() == "Работодатель")
-                {
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Archived)
-                    </td>
-                    <td>
-                        <label class="buttomStyle">
-                            <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Edit", "Vacancies", new { vacancyId = item.Id })'" />
-                            Изменить
-                        </label>
-                        <label class="buttomStyle">
-                            <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Details", "Vacancies", new { vacancyId = item.Id })'" />
-                            Подробнее
-                        </label>
-                        <label class="buttomStyle">
-                            <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Delete", "Vacancies", new { vacancyId = item.Id })'" />
-                            Удалить
-                        </label>
-                    </td>
-                }
-            </tr>
+            }
+        </tr>
         }
 
     </tbody>
@@ -117,16 +135,16 @@
             theme: "bootstrap",
 
             widthFixed: true,
-            
+
             widgets: ["filter", "columns", "zebra"],
 
             widgetOptions: {
                 zebra: ["even", "odd"],
-                
+
                 columns: ["primary", "secondary", "tertiary"],
-                
+
                 filter_reset: ".reset",
-                
+
                 filter_cssFilter: [
                     'form-control',
                     'form-control',
@@ -136,10 +154,10 @@
                     'form-control',
                     'form-control custom-select'
                 ],
-                
+
                 filter_functions: {
                     6: {
-                        "Открыта": function (e, n, f, i, $r, c, data) {  return n == "открыта"; },
+                        "Открыта": function (e, n, f, i, $r, c, data) { return n == "открыта"; },
                         "Закрыта": function (e, n, f, i, $r, c, data) { return n == "закрыта"; },
                     }
                 }
@@ -147,11 +165,11 @@
         })
             .tablesorterPager({
                 container: $(".ts-pager"),
-                
+
                 cssGoto: ".pagenum",
-                
+
                 removeRows: false,
-                
+
                 output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
 
             });

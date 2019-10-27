@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RecruitmentAgency.Models.Users>
+﻿@model IEnumerable<RecruitmentAgency.Models.User>
 
 <table class="table table-bordered table-striped">
     <thead class="thead-light">
@@ -44,20 +44,27 @@
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.UserName)</td>
                 <td>@Html.DisplayFor(modelItem => item.UserRole.Name)</td>
-                <td>
-                    <label class="buttomStyle">
-                        <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Edit", "Account", new { userId = item.Id })'" />
-                        Изменить
-                    </label>
-                    <label class="buttomStyle">
-                        <input type="button" class="buttomNone" onclick="location.href='@Url.Action("ChangePassword", "Account", new { userId = item.Id })'" />
-                        Изменить пароль
-                    </label>
-                    <label class="buttomStyle">
-                        <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Delete", "Account", new { userId = item.Id })'" />
-                        Удалить
-                    </label>
-                </td>
+                @if (ViewBag.userId != item.Id)
+                {
+                    <td>
+                        <label class="buttomStyle">
+                            <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Edit", "Account", new { userId = item.Id })'" />
+                            Изменить
+                        </label>
+                        <label class="buttomStyle">
+                            <input type="button" class="buttomNone" onclick="location.href='@Url.Action("ChangePassword", "Account", new { userId = item.Id })'" />
+                            Изменить пароль
+                        </label>
+                        <label class="buttomStyle">
+                            <input type="button" class="buttomNone" onclick="location.href='@Url.Action("Delete", "Account", new { userId = item.Id })'" />
+                            Удалить
+                        </label>
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
             </tr>
         }
     </tbody>

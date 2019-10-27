@@ -8,14 +8,13 @@ using RecruitmentAgency.Models;
 using RecruitmentAgency.Models.Identity;
 using RecruitmentAgency.Interfaces;
 using RecruitmentAgency.Repositories;
-using System.Collections.Generic;
 
 namespace RecruitmentAgency.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly IRepository<UserRoles> _userRolesRepository;
-        private readonly IRepository<Users> _usersRepository;
+        private readonly IRepository<UserRole> _userRolesRepository;
+        private readonly IUsersRepository _usersRepository;
 
         public AccountController()
         {
@@ -31,10 +30,11 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult UsersPartial()
         {
-            Users user = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First();
+            User user = _usersRepository.GetByName(User.Identity.Name);
 
             if (user.UserRole.Name == "Администратор")
             {
+                ViewBag.userId = user.Id;
                 return PartialView("_usersPartial", _usersRepository.GetAll());
             }
 
@@ -56,8 +56,8 @@ namespace RecruitmentAgency.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new Users() { UserName = model.UserName, UserRole = _userRolesRepository.GetAll().Where(r => r.Id == model.UserRole).First() };
-                var result = UsersManager.Create(user, model.Password);
+                User user = new User() { UserName = model.UserName, UserRole = _userRolesRepository.GetById(model.UserRole) };
+                IdentityResult result = UsersManager.Create(user, model.Password);
 
                 if (result.Succeeded)
                 {
@@ -81,7 +81,7 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Edit(int userId)
         {
-            Users user = _usersRepository.GetById(userId);
+            User user = _usersRepository.GetById(userId);
             ViewBag.userId = user.Id;
 
             SelectList roles = new SelectList(_userRolesRepository.GetAll(), "Id", "Name", user.UserRole.Id);
@@ -110,7 +110,7 @@ namespace RecruitmentAgency.Controllers
         [HttpPost]
         public ActionResult ChangePassword(RegisterViewModel registerViewModel, int userId)
         {
-            Users user = _usersRepository.GetById(userId);
+            User user = _usersRepository.GetById(userId);
 
             ModelState.Remove("UserName");
             ModelState.Remove("UserRole");
@@ -130,17 +130,17 @@ namespace RecruitmentAgency.Controllers
         [HttpPost]
         public ActionResult Edit(RegisterViewModel registerViewModel, int userId)
         {
-            Users user = _usersRepository.GetById(userId);
+            User user = _usersRepository.GetById(userId);
 
             ModelState.Remove("Password");
             ModelState.Remove("ConfirmPassword");
             if (ModelState.IsValid)
             {
-                UserRoles userRole = _userRolesRepository.GetById(registerViewModel.UserRole);
+                UserRole userRole = _userRolesRepository.GetById(registerViewModel.UserRole);
 
                 if (userRole.Id != user.UserRole.Id)
                 {
-                    Users newUser = new Users()
+                    User newUser = new User()
                     {
                         UserName = registerViewModel.UserName,
                         PasswordHash = user.PasswordHash,
@@ -170,7 +170,7 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Delete(int userId)
         {
-            Users user = _usersRepository.GetById(userId);
+            User user = _usersRepository.GetById(userId);
             _usersRepository.Delete(user);
 
             return RedirectToAction("Index");
@@ -194,7 +194,7 @@ namespace RecruitmentAgency.Controllers
                 var result = SignInManager.PasswordSignIn(model.UserName, model.Password, false, false);
                 if (result == SignInStatus.Success)
                 {
-                    var userRole = _usersRepository.GetAll().Where(u => u.UserName == model.UserName).First().UserRole;
+                    UserRole userRole = _usersRepository.GetByName(model.UserName).UserRole;
 
                     switch (userRole.Name)
                     {
@@ -233,7 +233,7 @@ namespace RecruitmentAgency.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new Users() { UserName = model.UserName, UserRole = _userRolesRepository.GetAll().Where(r=> r.Id == model.UserRole).First()};
+                var user = new User() { UserName = model.UserName, UserRole = _userRolesRepository.GetById(model.UserRole)};
                 var result = UsersManager.Create(user, model.Password);
                 
                 if (result.Succeeded)

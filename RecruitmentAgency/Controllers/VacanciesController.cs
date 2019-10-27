@@ -12,8 +12,8 @@ namespace RecruitmentAgency.Controllers
 {
     public class VacanciesController : Controller
     {
-        private readonly IRepository<Vacancies> _vacanciesRepository;
-        private readonly IRepository<Users> _usersRepository;
+        private readonly IVacanciesRepository _vacanciesRepository;
+        private readonly IUsersRepository _usersRepository;
 
         public VacanciesController()
         {
@@ -23,36 +23,36 @@ namespace RecruitmentAgency.Controllers
         
         public ActionResult Index()
         {
-            Users user = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First();
+            User user = _usersRepository.GetByName(User.Identity.Name);
             ViewBag.userId = user.Id;
 
             return View();
         }
 
         [Authorize]
-        public ActionResult VacanciesPartial(Summaries summary)
+        public ActionResult VacanciesPartial(Summary summary)
         {
-            Users user = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First();
+            User user = _usersRepository.GetByName(User.Identity.Name);
 
             if (user.UserRole.Name == "Работодатель")
             {
-                List<Vacancies> vacancies = _vacanciesRepository.GetAll().Where(v => v.UserId == user.Id).ToList();
+                List<Vacancy> vacancies = _vacanciesRepository.GetByUserId(user.Id).ToList();
 
                 return PartialView("_vacanciesPartial", vacancies);
             }
 
             if (user.UserRole.Name == "Администратор")
             {
-                var vacancies = _vacanciesRepository.GetAll();
+                List<Vacancy> vacancies = _vacanciesRepository.GetAll().ToList();
 
                 return PartialView("_vacanciesPartial", vacancies);
             }
 
             if ( summary != null)
             {
-                List<Vacancies> vacancies = summary.Id != 0 ?
-                    _vacanciesRepository.GetAll().Where(v => v.MinExperience <= summary.Experience && !v.Archived).ToList() :
-                    _vacanciesRepository.GetAll().Where(v => !v.Archived).ToList();
+                List<Vacancy> vacancies = summary.Id != 0 ?
+                    _vacanciesRepository.GetNotArchivedBySummary(summary).ToList() :
+                    _vacanciesRepository.GetNotArchived().ToList();
 
                 return PartialView("_vacanciesPartial", vacancies);
             }
@@ -65,8 +65,8 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Details(int vacancyId)
         {
-            Vacancies vacancy = _vacanciesRepository.GetById(vacancyId);
-            Users user = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First();
+            Vacancy vacancy = _vacanciesRepository.GetById(vacancyId);
+            User user = _usersRepository.GetByName(User.Identity.Name);
             ViewBag.userRoleName = user.UserRole.Name;
 
             return View(vacancy);
@@ -75,7 +75,7 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Delete(int vacancyId)
         {
-            Vacancies vacancy = _vacanciesRepository.GetById(vacancyId);
+            Vacancy vacancy = _vacanciesRepository.GetById(vacancyId);
             _vacanciesRepository.Delete(vacancy);
 
             return RedirectToAction("Index");
@@ -84,7 +84,7 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            return View("Edit", new Vacancies());
+            return View("Edit", new Vacancy());
         }
 
         [Authorize]
@@ -95,11 +95,11 @@ namespace RecruitmentAgency.Controllers
         
         [Authorize]
         [HttpPost]
-        public ActionResult Edit(Vacancies vacancy)
+        public ActionResult Edit(Vacancy vacancy)
         {
             if (ModelState.IsValid)
             {
-                vacancy.UserId = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First().Id;
+                vacancy.UserId = _usersRepository.GetByName(User.Identity.Name).Id;
 
                 if (vacancy.Id == 0)
                 {

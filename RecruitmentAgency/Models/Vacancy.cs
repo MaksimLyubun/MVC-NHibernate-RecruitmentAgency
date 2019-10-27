@@ -6,7 +6,7 @@ using RecruitmentAgency.Models.Identity;
 
 namespace RecruitmentAgency.Models
 {
-    public class Vacancies
+    public class Vacancy
     {
         [HiddenInput(DisplayValue = false)]
         public virtual int Id { get; set; }
@@ -19,6 +19,7 @@ namespace RecruitmentAgency.Models
         public virtual string Description { get; set; }
 
         [Display(Name = "Срок (лет)")]
+        [Range(1, 500, ErrorMessage = "Срок контракта должен быть в интервале от 1 до 500")]
         public virtual int? Term { get; set; }
 
         [Display(Name = "Компания")]
@@ -27,10 +28,12 @@ namespace RecruitmentAgency.Models
 
         [Display(Name = "Минимальный стаж (лет)")]
         [Required]
+        [Range(1, 500, ErrorMessage = "Требуемый стаж должен быть в интервале от 1 до 500")]
         public virtual int MinExperience { get; set; }
 
         [Display(Name = "Зарплата")]
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Соискателю не понравится доплачивать за работу, установите положительную зарплату")]
         public virtual int Salary { get; set; }
         
         [Display(Name = "Статус")]
@@ -40,12 +43,13 @@ namespace RecruitmentAgency.Models
         
         public virtual int UserId { get; set; }
 
-        public virtual Users User { get; set; }
+        public virtual User User { get; set; }
 
-        public class Map : ClassMap<Vacancies>
+        public class Map : ClassMap<Vacancy>
         {
             public Map()
             {
+                Table("Vacancies");
                 Id(x => x.Id).GeneratedBy.Identity();
                 Map(x => x.Name).Not.Nullable();
                 Map(x => x.Description).Nullable();

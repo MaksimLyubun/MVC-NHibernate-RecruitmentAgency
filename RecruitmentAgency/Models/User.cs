@@ -5,7 +5,7 @@ using System.Web.Mvc;
 
 namespace RecruitmentAgency.Models
 {
-    public class Users : IUser<int>
+    public class User : IUser<int>
     {
         [HiddenInput(DisplayValue = false)]
         public virtual int Id { get; protected set; }
@@ -19,12 +19,13 @@ namespace RecruitmentAgency.Models
 
         [Display(Name = "Роль")]
         [Required]
-        public virtual UserRoles UserRole { get; set; }
+        public virtual UserRole UserRole { get; set; }
 
-        public class Map : ClassMap<Users>
+        public class Map : ClassMap<User>
         {
             public Map()
             {
+                Table("Users");
                 Id(x => x.Id).GeneratedBy.Identity();
                 Map(x => x.UserName).Not.Nullable().Unique();
                 Map(x => x.PasswordHash).Not.Nullable();

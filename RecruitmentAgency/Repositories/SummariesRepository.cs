@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace RecruitmentAgency.Repositories
 {
-    public class SummariesRepository: IRepository<Summaries>
+    public class SummariesRepository: ISummariesRepository
     {
         private readonly ISession _session;
 
@@ -16,21 +16,33 @@ namespace RecruitmentAgency.Repositories
             _session = session;
         }
 
-        public IEnumerable<Summaries> GetAll()
+        public IEnumerable<Summary> GetAll()
         {
-            return _session.Query<Summaries>()
-                .Fetch(e => e.User)
-                .ToList();
+            return _session.Query<Summary>()
+                .Fetch(s => s.User);
         }
 
-        public Summaries GetById(int id)
+        public Summary GetById(int id)
         {
-            return _session.Query<Summaries>()
-                .Where(u => u.Id == id)
+            return _session.Query<Summary>()
+                .Where(s => s.Id == id)
                 .FirstOrDefault();
         }
-        
-        public void Create(Summaries entity)
+
+        public IEnumerable<Summary> GetByVacancy(Vacancy vacancy)
+        {
+            return _session.Query<Summary>()
+                .Where(s => s.Experience >= vacancy.MinExperience);
+        }
+
+        public Summary GetByUserId(int userId)
+        {
+            return _session.Query<Summary>()
+                .Where(s => s.UserId == userId)
+                .FirstOrDefault();
+        }
+
+        public void Create(Summary entity)
         {
             using (var transaction = _session.BeginTransaction())
             {
@@ -39,7 +51,7 @@ namespace RecruitmentAgency.Repositories
             }
         }
 
-        public void Update(Summaries entityToUpdate)
+        public void Update(Summary entityToUpdate)
         {
             using (var transaction = _session.BeginTransaction())
             {
@@ -48,7 +60,7 @@ namespace RecruitmentAgency.Repositories
             }
         }
 
-        public void Delete(Summaries entityToDelete)
+        public void Delete(Summary entityToDelete)
         {
             using (var transaction = _session.BeginTransaction())
             {

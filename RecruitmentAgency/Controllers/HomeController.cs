@@ -10,8 +10,8 @@ namespace RecruitmentAgency.Controllers
     [Authorize]
     public class HomeController : Controller
     {
-        private readonly IRepository<UserRoles> _userRolesRepository;
-        private readonly IRepository<Users> _usersRepository;
+        private readonly IRepository<UserRole> _userRolesRepository;
+        private readonly IUsersRepository _usersRepository;
 
         public HomeController()
         {
@@ -24,8 +24,8 @@ namespace RecruitmentAgency.Controllers
             return View(CurrentUser);
         }
 
-        private Users currentUser = null;
-        public Users CurrentUser
+        private User currentUser = null;
+        public User CurrentUser
         {
             get
             {
@@ -58,7 +58,7 @@ namespace RecruitmentAgency.Controllers
             string userRoleText = "";
             if (User.Identity.IsAuthenticated)
             {
-                var userRole = _usersRepository.GetAll().Where(u => u.UserName == User.Identity.Name).First().UserRole;
+                UserRole userRole = _usersRepository.GetByName(User.Identity.Name).UserRole;
                 userRoleText = userRole != null? userRole.Name: null;
             }
 

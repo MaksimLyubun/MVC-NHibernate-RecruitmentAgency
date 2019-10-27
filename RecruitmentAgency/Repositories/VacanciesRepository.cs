@@ -8,7 +8,7 @@ using System;
 
 namespace RecruitmentAgency.Repositories
 {
-    public class VacanciesRepository : IRepository<Vacancies>
+    public class VacanciesRepository : IVacanciesRepository
     {
         const string insertStoreProcedure = "EXECUTE [dbo].[AddVacancy] " +
             "@Name=:Name, " +
@@ -26,21 +26,40 @@ namespace RecruitmentAgency.Repositories
             _session = session;
         }
 
-        public IEnumerable<Vacancies> GetAll()
+        public IEnumerable<Vacancy> GetAll()
         {
-            return _session.Query<Vacancies>()
-                .Fetch(e => e.User)
-                .ToList();
+            return _session.Query<Vacancy>()
+                .Fetch(v => v.User);
         }
 
-        public Vacancies GetById(int id)
+        public Vacancy GetById(int id)
         {
-            return _session.Query<Vacancies>()
-                .Where(u => u.Id == id)
+            return _session.Query<Vacancy>()
+                .Where(v => v.Id == id)
                 .FirstOrDefault();
         }
 
-        public void Create(Vacancies entity)
+        public IEnumerable<Vacancy> GetByUserId(int userId)
+        {
+            return _session.Query<Vacancy>()
+                .Where(v => v.UserId == userId);
+        }
+
+        public IEnumerable<Vacancy> GetNotArchived()
+        {
+            return _session.Query<Vacancy>()
+                .Fetch(v => v.User)
+                .Where(v => !v.Archived);
+        }
+
+        public IEnumerable<Vacancy> GetNotArchivedBySummary(Summary summary)
+        {
+            return _session.Query<Vacancy>()
+                .Fetch(v => v.User)
+                .Where(v => !v.Archived && v.MinExperience <= summary.Experience);
+        }
+
+        public void Create(Vacancy entity)
         {
             using (var transaction = _session.BeginTransaction())
             {
@@ -60,7 +79,7 @@ namespace RecruitmentAgency.Repositories
             }
         }
 
-        public void Update(Vacancies entityToUpdate)
+        public void Update(Vacancy entityToUpdate)
         {
             using (var transaction = _session.BeginTransaction())
             {
@@ -69,7 +88,7 @@ namespace RecruitmentAgency.Repositories
             }
         }
 
-        public void Delete(Vacancies entityToDelete)
+        public void Delete(Vacancy entityToDelete)
         {
             using (var transaction = _session.BeginTransaction())
             {

@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace RecruitmentAgency.Repositories
 {
-    public class UsersRepository : IRepository<Users>
+    public class UsersRepository : IUsersRepository
     {
         private readonly ISession _session;
 
@@ -17,22 +17,29 @@ namespace RecruitmentAgency.Repositories
             _session = session;
         }
         
-        public IEnumerable<Users> GetAll()
+        public IEnumerable<User> GetAll()
         {
-            return _session.Query<Users>()
-                .Fetch(p => p.UserRole)
-                .ToList();
+            return _session.Query<User>()
+                .Fetch(u => u.UserRole);
         }
 
-        public Users GetById(int id)
+        public User GetById(int id)
         {
-            return _session.Query<Users>()
+            return _session.Query<User>()
                 .Where(u => u.Id == id)
-                .Fetch(p => p.UserRole)
-                .FirstOrDefault();
+                .Fetch(u => u.UserRole)
+                .First();
         }
-        
-        public void Create(Users entity)
+
+        public User GetByName(string name)
+        {
+            return _session.Query<User>()
+                .Where(u => u.UserName == name)
+                .Fetch(u => u.UserRole)
+                .First();
+        }
+
+        public void Create(User entity)
         {
             using (var tran = _session.BeginTransaction())
             {
@@ -41,7 +48,7 @@ namespace RecruitmentAgency.Repositories
             }
         }
 
-        public void Update(Users entityToUpdate)
+        public void Update(User entityToUpdate)
         {
             using (var transaction = _session.BeginTransaction())
             {
@@ -50,7 +57,7 @@ namespace RecruitmentAgency.Repositories
             }
         }
 
-        public void Delete(Users entityToDelete)
+        public void Delete(User entityToDelete)
         {
             using (var transaction = _session.BeginTransaction())
             {

@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace RecruitmentAgency.Repositories
 {
-    public class UserRolesRepository : IRepository<UserRoles>
+    public class UserRolesRepository : IRepository<UserRole>
     {
         private readonly ISession _session;
 
@@ -15,20 +15,19 @@ namespace RecruitmentAgency.Repositories
             _session = session;
         }
         
-        public IEnumerable<UserRoles> GetAll()
+        public IEnumerable<UserRole> GetAll()
         {
-            return _session.Query<UserRoles>()
-                .ToList();
+            return _session.Query<UserRole>();
         }
 
-        public UserRoles GetById(int id)
+        public UserRole GetById(int id)
         {
-            return _session.Query<UserRoles>()
-                .Where(u => u.Id == id)
+            return _session.Query<UserRole>()
+                .Where(ur => ur.Id == id)
                 .FirstOrDefault();
         }
 
-        public void Create(UserRoles entity)
+        public void Create(UserRole entity)
         {
             using (var transaction = _session.BeginTransaction())
             {
@@ -37,7 +36,7 @@ namespace RecruitmentAgency.Repositories
             }
         }
 
-        public void Update(UserRoles entityToUpdate)
+        public void Update(UserRole entityToUpdate)
         {
             using (var transaction = _session.BeginTransaction())
             {
@@ -46,7 +45,7 @@ namespace RecruitmentAgency.Repositories
             }
         }
 
-        public void Delete(UserRoles entityToDelete)
+        public void Delete(UserRole entityToDelete)
         {
             using (var transaction = _session.BeginTransaction())
             {
