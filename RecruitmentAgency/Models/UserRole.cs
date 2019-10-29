@@ -1,13 +1,13 @@
 ﻿using FluentNHibernate.Mapping;
 using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
-
-using RecruitmentAgency.Models.Identity;
 using System.ComponentModel.DataAnnotations;
+
+using RecruitmentAgency.Interfaces;
 
 namespace RecruitmentAgency.Models
 {
-    public class UserRole : IRole<int>
+    public class UserRole : IRole<int>, IEntity
     {
         public virtual int Id { get; protected set; }
 
@@ -22,7 +22,7 @@ namespace RecruitmentAgency.Models
             {
                 Table("UserRoles");
                 Id(x => x.Id);
-                Map(x => x.Name).Not.Nullable();
+                Map(x => x.Name).Column("Name").Not.Nullable();
                 HasMany(x => x.Users).Inverse().Cascade.All().KeyColumn("UserRole");
             }
         }

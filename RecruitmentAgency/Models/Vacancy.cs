@@ -2,14 +2,15 @@
 using System.ComponentModel.DataAnnotations;
 
 using FluentNHibernate.Mapping;
-using RecruitmentAgency.Models.Identity;
+
+using RecruitmentAgency.Interfaces;
 
 namespace RecruitmentAgency.Models
 {
-    public class Vacancy
+    public class Vacancy : IEntity
     {
         [HiddenInput(DisplayValue = false)]
-        public virtual int Id { get; set; }
+        public virtual int Id { get; protected set; }
 
         [Display(Name = "Название")]
         [Required]
@@ -51,14 +52,14 @@ namespace RecruitmentAgency.Models
             {
                 Table("Vacancies");
                 Id(x => x.Id).GeneratedBy.Identity();
-                Map(x => x.Name).Not.Nullable();
-                Map(x => x.Description).Nullable();
-                Map(x => x.Term).Nullable();
-                Map(x => x.Company).Not.Nullable();
-                Map(x => x.MinExperience).Not.Nullable();
-                Map(x => x.Salary).Not.Nullable();
-                Map(x => x.Archived).Not.Nullable();
-                Map(x => x.UserId).Not.Nullable();
+                Map(x => x.Name).Column("Name").Not.Nullable();
+                Map(x => x.Description).Column("Description").Nullable();
+                Map(x => x.Term).Column("Term").Nullable();
+                Map(x => x.Company).Column("Company").Not.Nullable();
+                Map(x => x.MinExperience).Column("MinExperience").Not.Nullable();
+                Map(x => x.Salary).Column("Salary").Not.Nullable();
+                Map(x => x.Archived).Column("Archived").Not.Nullable();
+                Map(x => x.UserId).Column("UserId").Not.Nullable();
                 References(x => x.User).Column("UserId").ReadOnly();
             }
         }

@@ -13,7 +13,7 @@ namespace RecruitmentAgency.Controllers
 
         public HomeController()
         {
-            _userRolesRepository = new UserRolesRepository(new DatabaseContext().MakeSession());
+            _userRolesRepository = new BaseRepository<UserRole>(new DatabaseContext().MakeSession());
             _usersRepository = new UsersRepository(new DatabaseContext().MakeSession());
         }
 

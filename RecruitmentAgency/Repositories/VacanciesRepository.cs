@@ -8,7 +8,7 @@ using System;
 
 namespace RecruitmentAgency.Repositories
 {
-    public class VacanciesRepository : IVacanciesRepository
+    public class VacanciesRepository : BaseRepository<Vacancy>, IVacanciesRepository
     {
         const string insertStoreProcedure = "EXECUTE [dbo].[AddVacancy] " +
             "@Name=:Name, " +
@@ -18,23 +18,19 @@ namespace RecruitmentAgency.Repositories
             "@Salary=:Salary, " +
             "@UserId=:UserId, " +
             "@Archived=:Archived";
+        
+        public VacanciesRepository(ISession session) : base(session) { }
 
-        private readonly ISession _session;
-
-        public VacanciesRepository(ISession session)
-        {
-            _session = session;
-        }
-
-        public IEnumerable<Vacancy> GetAll()
+        public override IEnumerable<Vacancy> GetAll()
         {
             return _session.Query<Vacancy>()
                 .Fetch(v => v.User);
         }
 
-        public Vacancy GetById(int id)
+        public override Vacancy GetById(int id)
         {
             return _session.Query<Vacancy>()
+                .Fetch(v => v.User)
                 .Where(v => v.Id == id)
                 .FirstOrDefault();
         }
@@ -59,7 +55,7 @@ namespace RecruitmentAgency.Repositories
                 .Where(v => !v.Archived && v.MinExperience <= summary.Experience);
         }
 
-        public void Create(Vacancy entity)
+        public override void Create(Vacancy entity)
         {
             using (var transaction = _session.BeginTransaction())
             {
@@ -75,24 +71,6 @@ namespace RecruitmentAgency.Repositories
                 query.SetParameter("Archived", entity.Archived);
                 query.UniqueResult();
 
-                transaction.Commit();
-            }
-        }
-
-        public void Update(Vacancy entityToUpdate)
-        {
-            using (var transaction = _session.BeginTransaction())
-            {
-                _session.Update(entityToUpdate);
-                transaction.Commit();
-            }
-        }
-
-        public void Delete(Vacancy entityToDelete)
-        {
-            using (var transaction = _session.BeginTransaction())
-            {
-                _session.Delete(entityToDelete);
                 transaction.Commit();
             }
         }

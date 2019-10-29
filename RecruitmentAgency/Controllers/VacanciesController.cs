@@ -67,6 +67,11 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Details(int vacancyId)
         {
+            if (vacancyId <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             Vacancy vacancy = _vacanciesRepository.GetById(vacancyId);
             User user = _usersRepository.GetByName(User.Identity.Name);
 
@@ -79,6 +84,11 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Delete(int vacancyId)
         {
+            if (vacancyId <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             Vacancy vacancy = _vacanciesRepository.GetById(vacancyId);
             _vacanciesRepository.Delete(vacancy);
 
@@ -94,6 +104,11 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Edit(int vacancyId)
         {
+            if (vacancyId <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             return View(_vacanciesRepository.GetById(vacancyId));
         }
         

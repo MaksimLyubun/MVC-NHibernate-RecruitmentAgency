@@ -3,9 +3,11 @@ using Microsoft.AspNet.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 
+using RecruitmentAgency.Interfaces;
+
 namespace RecruitmentAgency.Models
 {
-    public class User : IUser<int>
+    public class User : IUser<int>, IEntity
     {
         const string admin = "Администратор";
         const string jobseeker = "Соискатель";
@@ -20,7 +22,7 @@ namespace RecruitmentAgency.Models
 
         [HiddenInput(DisplayValue = false)]
         public virtual string PasswordHash { get; set; }
-
+        
         [Display(Name = "Роль")]
         [Required]
         public virtual UserRole UserRole { get; set; }
@@ -46,8 +48,8 @@ namespace RecruitmentAgency.Models
             {
                 Table("Users");
                 Id(x => x.Id).GeneratedBy.Identity();
-                Map(x => x.UserName).Not.Nullable().Unique();
-                Map(x => x.PasswordHash).Not.Nullable();
+                Map(x => x.UserName).Column("UserName").Not.Nullable().Unique();
+                Map(x => x.PasswordHash).Column("PasswordHash").Not.Nullable();
                 References(x => x.UserRole).Column("UserRoleId").Not.Nullable();
             }
         }

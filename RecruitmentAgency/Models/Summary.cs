@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Web.Mvc;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using RecruitmentAgency.Models.Identity;
 using FluentNHibernate.Mapping;
+
+using RecruitmentAgency.Interfaces;
 
 namespace RecruitmentAgency.Models
 {
-    public class Summary
+    public class Summary : IEntity
     {
         [HiddenInput(DisplayValue = false)]
-        public virtual int Id { get; set; }
+        public virtual int Id { get; protected set; }
 
         [Display(Name = "ФИО")]
         [Required]
@@ -43,11 +43,11 @@ namespace RecruitmentAgency.Models
             {
                 Table("Summaries");
                 Id(x => x.Id).GeneratedBy.Identity();
-                Map(x => x.JobseekerName).Not.Nullable();
-                Map(x => x.DateOfBirth).Not.Nullable();
-                Map(x => x.Experience).Not.Nullable();
-                Map(x => x.Photo).CustomSqlType("VARBINARY (MAX)").Length(Int32.MaxValue).Nullable();
-                Map(x => x.UserId).Not.Nullable();
+                Map(x => x.JobseekerName).Column("JobseekerName").Not.Nullable();
+                Map(x => x.DateOfBirth).Column("DateOfBirth").Not.Nullable();
+                Map(x => x.Experience).Column("Experience").Not.Nullable();
+                Map(x => x.Photo).Column("Photo").CustomSqlType("VARBINARY (MAX)").Length(Int32.MaxValue).Nullable();
+                Map(x => x.UserId).Column("UserId").Not.Nullable();
                 References(x => x.User).Column("UserId").ReadOnly();
             }
         }

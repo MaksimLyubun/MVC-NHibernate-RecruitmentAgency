@@ -19,7 +19,7 @@ namespace RecruitmentAgency.Controllers
 
         public AccountController()
         {
-            _userRolesRepository = new UserRolesRepository(new DatabaseContext().MakeSession());
+            _userRolesRepository = new BaseRepository<UserRole>(new DatabaseContext().MakeSession());
             _usersRepository = new UsersRepository(new DatabaseContext().MakeSession());
         }
         
@@ -84,6 +84,11 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Edit(int userId)
         {
+            if(userId <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             User user = _usersRepository.GetById(userId);
             ViewBag.userId = user.Id;
 
@@ -102,6 +107,11 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult ChangePassword(int userId)
         {
+            if (userId <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             ViewBag.userId = userId;
 
             PasswordViewModel model = new PasswordViewModel();
@@ -113,6 +123,11 @@ namespace RecruitmentAgency.Controllers
         [HttpPost]
         public ActionResult ChangePassword(PasswordViewModel model, int userId)
         {
+            if (userId <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             User user = _usersRepository.GetById(userId);
 
             ModelState.Remove("UserName");
@@ -133,6 +148,11 @@ namespace RecruitmentAgency.Controllers
         [HttpPost]
         public ActionResult Edit(UserViewModel model, int userId)
         {
+            if (userId <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             User user = _usersRepository.GetById(userId);
 
             ModelState.Remove("Password");
@@ -173,6 +193,11 @@ namespace RecruitmentAgency.Controllers
         [Authorize]
         public ActionResult Delete(int userId)
         {
+            if (userId <= 0)
+            {
+                return RedirectToAction("Index");
+            }
+
             User user = _usersRepository.GetById(userId);
             _usersRepository.Delete(user);
 

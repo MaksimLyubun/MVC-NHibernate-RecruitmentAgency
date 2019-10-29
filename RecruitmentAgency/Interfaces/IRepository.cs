@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using RecruitmentAgency.Models;
+using RecruitmentAgency.Interfaces;
 
 namespace RecruitmentAgency.Interfaces
 {
-    public interface IRepository<TEntity> where TEntity : class
+    public interface IRepository<TEntity> where TEntity : IEntity
     {
         IEnumerable<TEntity> GetAll();
 
